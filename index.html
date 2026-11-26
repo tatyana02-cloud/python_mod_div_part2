@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Тест: Целочисленное деление и остаток в Python (// и %)</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+    body {
+      background: #f0f4f8;
+      color: #0f172a;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 24px 16px;
+      font-size: 16px;
+    }
+    .main-card {
+      background: #ffffff;
+      width: 100%;
+      max-width: 840px;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      padding: 32px;
+      position: relative;
+    }
+
+    .header-status {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .step-badge {
+      font-size: 14px;
+      font-weight: 700;
+      color: #2563eb;
+      background: #eff6ff;
+      padding: 5px 12px;
+      border-radius: 6px;
+    }
+    .score-badge-header {
+      font-size: 14px;
+      font-weight: 700;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .page-view {
+      display: none;
+    }
+    .page-view.active {
+      display: block;
+    }
+
+    /* ВСТУПИТЕЛЬНЫЙ ЭКРАН */
+    .intro-screen {
+      padding: 8px 0;
+    }
+    .intro-title {
+      font-size: 26px;
+      font-weight: 800;
+      color: #0f172a;
+      text-align: center;
+      margin-bottom: 22px;
+    }
+    .rules-box {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 20px 24px;
+      margin-bottom: 26px;
+    }
+    .rules-title {
+      font-size: 16.5px;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 12px;
+    }
+    .rules-list {
+      padding-left: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 15.5px;
+      color: #1e293b;
+      line-height: 1.5;
+    }
+    .intro-actions {
+      text-align: center;
+    }
+    .btn-start {
+      background: #1e293b;
+      color: #ffffff;
+      border: none;
+      border-radius: 10px;
+      padding: 13px 34px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-start:hover {
+      background: #0f172a;
+    }
+
+    .task-statement {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 15px 18px;
+      margin-bottom: 18px;
+      font-size: 16px;
+      font-weight: 500;
+      color: #0f172a;
+      line-height: 1.5;
+    }
+
+    /* ЗАДАНИЕ 1: ВЫЧИСЛЕНИЕ // И % */
+    .expr-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    @media (max-width: 600px) {
+      .expr-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .expr-card {
+      background: #f8fafc;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      transition: all 0.2s;
+    }
+    .expr-card.correct-card {
+      background: #f0fdf4;
+      border-color: #22c55e;
+    }
+    .expr-card.error-card {
+      background: #fef2f2;
+      border-color: #ef4444;
+    }
+    .expr-code {
+      font-family: 'Consolas', 'Courier New', monospace;
+      font-size: 17px;
+      font-weight: 700;
+      color: #1e293b;
+    }
+    .expr-input {
+      width: 96px;
+      padding: 6px 10px;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 6px;
+      font-family: 'Consolas', 'Courier New', monospace;
+      font-size: 17px;
+      font-weight: 700;
+      text-align: center;
+      color: #0f172a;
+      background: #ffffff;
+      outline: none;
+    }
+    .expr-input:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 2px #eff6ff;
+    }
+    .expr-input.ok-input {
+      background: #dcfce7;
+      border-color: #22c55e;
+      color: #15803d;
+    }
+    .expr-input.err-input {
+      background: #fee2e2;
+      border-color: #ef4444;
+      color: #b91c1c;
+    }
+
+    /* ЗАДАНИЯ 2-4: КОД И ПОЛЯ ПЕРЕМЕННЫХ + ОТВЕТ */
+    .trace-board {
+      display: grid;
+      grid-template-columns: 350px 1fr;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 8px;
+      background: #ffffff;
+      margin-bottom: 18px;
+      overflow: hidden;
+    }
+    @media (max-width: 720px) {
+      .trace-board {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .code-panel {
+      background: #1e293b;
+      color: #f8fafc;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .code-panel-header {
+      font-size: 13px;
+      font-weight: 700;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      margin-bottom: 12px;
+    }
+    .code-lines {
+      font-family: 'Consolas', 'Courier New', monospace;
+      font-size: 16px;
+      line-height: 1.85;
+    }
+    .code-line {
+      display: flex;
+      align-items: center;
+    }
+    .line-num {
+      color: #64748b;
+      width: 24px;
+      font-size: 13px;
+      user-select: none;
+      flex-shrink: 0;
+    }
+    .fn { color: #a78bfa; }
+    .num { color: #fbbf24; }
+    .op { color: #f472b6; }
+
+    .input-badge-box {
+      margin-top: 16px;
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 6px;
+      padding: 10px 12px;
+      font-size: 14.5px;
+      color: #cbd5e1;
+    }
+    .input-badge-box strong {
+      color: #38bdf8;
+      font-family: 'Consolas', 'Courier New', monospace;
+      font-size: 16px;
+    }
+
+    .memory-panel {
+      padding: 18px;
+      background: #fafafa;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .board-header {
+      font-size: 14.5px;
+      font-weight: 800;
+      color: #0f172a;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    .var-row {
+      background: #ffffff;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 9px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 12px;
+      transition: all 0.2s;
+    }
+    .var-row.answer-row {
+      margin-top: 6px;
+      border-color: #94a3b8;
+      background: #f8fafc;
+    }
+    .var-row.ok-row {
+      background: #f0fdf4 !important;
+      border-color: #22c55e !important;
+    }
+    .var-row.err-row {
+      background: #fef2f2 !important;
+      border-color: #ef4444 !important;
+    }
+    .var-label-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .var-badge {
+      min-width: 42px;
+      height: 32px;
+      padding: 0 10px;
+      border-radius: 5px;
+      background: #e2e8f0;
+      color: #0f172a;
+      font-family: 'Consolas', 'Courier New', monospace;
+      font-size: 16px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .var-badge.ans-badge {
+      background: #e2e8f0;
+      color: #0f172a;
+      font-family: inherit;
+      font-size: 15px;
+      padding: 0 12px;
+    }
+    .var-eq {
+      font-family: 'Consolas', 'Courier New', monospace;
+      font-size: 17px;
+      font-weight: 700;
+      color: #334155;
+    }
+    .var-input {
+      width: 130px;
+      padding: 6px 10px;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 6px;
+      font-family: 'Consolas', 'Courier New', monospace;
+      font-size: 17px;
+      font-weight: 700;
+      text-align: center;
+      color: #0f172a;
+      background: #ffffff;
+      outline: none;
+    }
+    .var-input:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 2px #eff6ff;
+    }
+    .var-input.ok-input {
+      background: #dcfce7;
+      border-color: #22c55e;
+      color: #15803d;
+    }
+    .var-input.err-input {
+      background: #fee2e2;
+      border-color: #ef4444;
+      color: #b91c1c;
+    }
+
+    .feedback-note {
+      padding: 12px 16px;
+      border-radius: 6px;
+      font-size: 15.5px;
+      font-weight: 700;
+      display: none;
+      margin-top: 14px;
+    }
+    .feedback-note.correct {
+      background: #f0fdf4;
+      border-left: 5px solid #22c55e;
+      color: #166534;
+    }
+    .feedback-note.wrong {
+      background: #fef2f2;
+      border-left: 5px solid #ef4444;
+      color: #991b1b;
+    }
+
+    .btn-nav {
+      padding: 10px 24px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-prev {
+      background: #ffffff;
+      color: #475569;
+      border: 1px solid #cbd5e1;
+    }
+    .btn-prev:hover:not(:disabled) {
+      background: #f8fafc;
+      color: #0f172a;
+    }
+    .btn-next-action {
+      border: none;
+    }
+    .btn-next-action.btn-forward {
+      background: #2563eb;
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+    }
+    .btn-next-action.btn-forward:hover:not(:disabled) {
+      background: #1d4ed8;
+    }
+    .btn-next-action.btn-skip {
+      background: #f1f5f9;
+      color: #64748b;
+      border: 1px solid #cbd5e1;
+    }
+    .btn-next-action.btn-skip:hover {
+      background: #e2e8f0;
+      color: #334155;
+    }
+    .btn-nav:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .btn-primary {
+      background: #2563eb;
+      color: #ffffff;
+      border: none;
+      border-radius: 10px;
+      padding: 12px 32px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+    }
+    .btn-primary:hover {
+      background: #1d4ed8;
+    }
+
+    .nav-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 28px;
+      padding-top: 18px;
+      border-top: 1px solid #f1f5f9;
+    }
+
+    .result-screen {
+      text-align: center;
+      padding: 10px 0;
+    }
+    .result-screen h2 {
+      font-size: 24px;
+      font-weight: 800;
+      color: #1e293b;
+      margin-bottom: 8px;
+    }
+    .result-score {
+      font-size: 48px;
+      font-weight: 800;
+      color: #1e293b;
+      margin: 14px 0;
+    }
+    .results-badges {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin: 20px 0 32px 0;
+    }
+    .badge-item {
+      width: 52px;
+      height: 52px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+      transition: transform 0.15s;
+    }
+    .badge-item:hover {
+      transform: scale(1.08);
+    }
+    .badge-item.correct {
+      background: #dcfce7;
+      color: #15803d;
+      border: 2px solid #22c55e;
+    }
+    .badge-item.partial {
+      background: #fef9c3;
+      color: #854d0e;
+      border: 2px solid #eab308;
+    }
+    .badge-item.wrong {
+      background: #fee2e2;
+      color: #b91c1c;
+      border: 2px solid #ef4444;
+    }
+    .badge-item.unanswered {
+      background: #f1f5f9;
+      color: #64748b;
+      border: 2px solid #cbd5e1;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="main-card">
+    <div class="header-status" id="header-status" style="display: none;">
+      <span class="step-badge" id="step-badge-text">Задание 1 из 4</span>
+      <span class="score-badge-header" id="score-badge-text">Баллы: 0 / 4</span>
+    </div>
+
+    <!-- ВСТУПИТЕЛЬНАЯ ЧАСТЬ -->
+    <div class="page-view active" id="page-intro">
+      <div class="intro-screen">
+        <h1 class="intro-title">Тест: Целочисленное деление и остаток в Python (// и %)</h1>
+
+        <div class="rules-box">
+          <div class="rules-title">Правила прохождения:</div>
+          <ol class="rules-list">
+            <li><strong>Баллы:</strong> 1 балл начисляется за задание, выполненное верно с первой попытки; 0,5 балла - если были исправлены ошибки.</li>
+            <li><strong>Проверка:</strong> зелёным выделяются верные ответы, жёлтым - частично верные задания (с исправлениями), красным - неверные ответы.</li>
+            <li><strong>Тест можно перепроходить </strong>Задания могут варьироваться</li>
+          </ol>
+        </div>
+
+        <div class="intro-actions">
+          <button class="btn-start" onclick="startTest()">Начать тест</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ЗАДАНИЕ 1: ВЫЧИСЛЕНИЕ // И % -->
+    <div class="page-view" id="page-0">
+      <div class="task-statement">
+        <strong>Задание №1:</strong> Впишите результат каждого выражения в Python.
+      </div>
+
+      <div class="expr-grid" id="expr-grid-1"></div>
+
+      <div>
+        <button class="btn-nav btn-forward" id="btn-check-1" onclick="checkTask1()" style="background:#2563eb; color:#ffffff;">Проверить</button>
+      </div>
+      <div class="feedback-note" id="fb-1"></div>
+    </div>
+
+    <!-- ЗАДАНИЯ 2–4: ТРАССИРОВКА ПЕРЕМЕННЫХ И ОТВЕТ -->
+    <div id="trace-tasks-container"></div>
+
+    <!-- ИТОГОВЫЙ ЭКРАН -->
+    <div class="page-view" id="page-4">
+      <div class="result-screen">
+        <h2>Тестирование завершено</h2>
+        <div class="result-score" id="final-score">0 / 4</div>
+        <div class="results-badges" id="results-badges"></div>
+        <button class="btn-primary" onclick="restartQuiz()">Пройти повторно</button>
+      </div>
+    </div>
+
+    <!-- Нижняя навигация -->
+    <div class="nav-footer" id="nav-footer" style="display: none;">
+      <button class="btn-nav btn-prev" id="global-prev" onclick="changeStep(-1)">&larr; Назад</button>
+      <button class="btn-nav btn-next-action" id="global-next" onclick="handleNextOrSkip()">Пропустить &rarr;</button>
+    </div>
+  </div>
+
+  <script>
+    const variants = [
+      // ВАРИАНТ 1
+      {
+        exprItems: [
+          { expr: "748 // 10", expected: "74" },
+          { expr: "748 % 100", expected: "48" },
+          { expr: "748 // 1000", expected: "0" },
+          { expr: "748 % 10", expected: "8" },
+          { expr: "748 // 100", expected: "7" },
+          { expr: "748 % 1000", expected: "748" }
+        ],
+        traceTasks: {
+          2: {
+            title: "Задание №2:",
+            prompt: "Вычислите значения переменных по порядку и запишите ответ, если ввести число <strong>5831</strong>.",
+            inputText: "Ввод: 5831",
+            codeLines: [
+              "n = int(input())",
+              "p = n % 1000",
+              "q = n // 100",
+              "k = n % 10",
+              "print(k * 100 + p // 10 + q)"
+            ],
+            fields: [
+              { label: "p", expected: "831", isAnswer: false },
+              { label: "q", expected: "58", isAnswer: false },
+              { label: "k", expected: "1", isAnswer: false },
+              { label: "Ответ", expected: "241", isAnswer: true }
+            ]
+          },
+          3: {
+            title: "Задание №3:",
+            prompt: "Вычислите значения переменных по порядку и запишите ответ, если ввести число <strong>629</strong>.",
+            inputText: "Ввод: 629",
+            codeLines: [
+              "m = int(input())",
+              "a = m // 100",
+              "b = m % 10",
+              "c = m // 10 % 10",
+              "res = c * 100 + a * 10 + b",
+              "print(res)"
+            ],
+            fields: [
+              { label: "a", expected: "6", isAnswer: false },
+              { label: "b", expected: "9", isAnswer: false },
+              { label: "c", expected: "2", isAnswer: false },
+              { label: "Ответ", expected: "269", isAnswer: true }
+            ]
+          },
+          4: {
+            title: "Задание №4:",
+            prompt: "Вычислите значения переменных по порядку и запишите ответ (два числа через пробел), если ввести <strong>384</strong> и <strong>915</strong>.",
+            inputText: "Ввод: a = 384, b = 915",
+            codeLines: [
+              "a = int(input())",
+              "b = int(input())",
+              "x1 = a // 10",
+              "x2 = b % 100",
+              "y1 = a % 10",
+              "y2 = b // 100",
+              "print(y2 * 100 + x1, y1 * 10 + x2 // 10)"
+            ],
+            fields: [
+              { label: "x1", expected: "38", isAnswer: false },
+              { label: "x2", expected: "15", isAnswer: false },
+              { label: "y1", expected: "4", isAnswer: false },
+              { label: "y2", expected: "9", isAnswer: false },
+              { label: "Ответ", expected: "938 41", isAnswer: true }
+            ]
+          }
+        }
+      },
+
+      // ВАРИАНТ 2
+      {
+        exprItems: [
+          { expr: "915 % 10", expected: "5" },
+          { expr: "915 // 100", expected: "9" },
+          { expr: "915 % 1000", expected: "915" },
+          { expr: "915 // 10", expected: "91" },
+          { expr: "915 // 1000", expected: "0" },
+          { expr: "915 % 100", expected: "15" }
+        ],
+        traceTasks: {
+          2: {
+            title: "Задание №2:",
+            prompt: "Вычислите значения переменных по порядку и запишите ответ, если ввести число <strong>7462</strong>.",
+            inputText: "Ввод: 7462",
+            codeLines: [
+              "x = int(input())",
+              "d = x // 10",
+              "e = x % 100",
+              "f = x // 1000",
+              "print(e * 100 + d % 10 * 10 + f)"
+            ],
+            fields: [
+              { label: "d", expected: "746", isAnswer: false },
+              { label: "e", expected: "62", isAnswer: false },
+              { label: "f", expected: "7", isAnswer: false },
+              { label: "Ответ", expected: "6267", isAnswer: true }
+            ]
+          },
+          3: {
+            title: "Задание №3:",
+            prompt: "Вычислите значения переменных по порядку и запишите ответ, если ввести число <strong>853</strong>.",
+            inputText: "Ввод: 853",
+            codeLines: [
+              "n = int(input())",
+              "s1 = n % 10",
+              "s2 = n // 10 % 10",
+              "s3 = n // 100",
+              "ans = s2 * 100 + s1 * 10 + s3",
+              "print(ans)"
+            ],
+            fields: [
+              { label: "s1", expected: "3", isAnswer: false },
+              { label: "s2", expected: "5", isAnswer: false },
+              { label: "s3", expected: "8", isAnswer: false },
+              { label: "Ответ", expected: "538", isAnswer: true }
+            ]
+          },
+          4: {
+            title: "Задание №4:",
+            prompt: "Вычислите значения переменных по порядку и запишите ответ (два числа через пробел), если ввести <strong>672</strong> и <strong>419</strong>.",
+            inputText: "Ввод: m = 672, k = 419",
+            codeLines: [
+              "m = int(input())",
+              "k = int(input())",
+              "p1 = m % 100",
+              "p2 = k // 10",
+              "q1 = m // 100",
+              "q2 = k % 10",
+              "print(q2 * 100 + p1, p2 * 10 + q1)"
+            ],
+            fields: [
+              { label: "p1", expected: "72", isAnswer: false },
+              { label: "p2", expected: "41", isAnswer: false },
+              { label: "q1", expected: "6", isAnswer: false },
+              { label: "q2", expected: "9", isAnswer: false },
+              { label: "Ответ", expected: "972 416", isAnswer: true }
+            ]
+          }
+        }
+      },
+
+      // ВАРИАНТ 3
+      {
+        exprItems: [
+          { expr: "309 % 100", expected: "9" },
+          { expr: "309 // 1000", expected: "0" },
+          { expr: "309 // 10", expected: "30" },
+          { expr: "309 % 1000", expected: "309" },
+          { expr: "309 % 10", expected: "9" },
+          { expr: "309 // 100", expected: "3" }
+        ],
+        traceTasks: {
+          2: {
+            title: "Задание №2:",
+            prompt: "Вычислите значения переменных по порядку и запишите ответ, если ввести число <strong>9247</strong>.",
+            inputText: "Ввод: 9247",
+            codeLines: [
+              "k = int(input())",
+              "a = k // 100",
+              "b = k % 1000",
+              "c = b // 100",
+              "print(c * 100 + a % 10 * 10 + k % 10)"
+            ],
+            fields: [
+              { label: "a", expected: "92", isAnswer: false },
+              { label: "b", expected: "247", isAnswer: false },
+              { label: "c", expected: "2", isAnswer: false },
+              { label: "Ответ", expected: "227", isAnswer: true }
+            ]
+          },
+          3: {
+            title: "Задание №3:",
+            prompt: "Вычислите значения переменных по порядку и запишите ответ, если ввести число <strong>741</strong>.",
+            inputText: "Ввод: 741",
+            codeLines: [
+              "x = int(input())",
+              "d1 = x // 10 % 10",
+              "d2 = x // 100",
+              "d3 = x % 10",
+              "res = d3 * 100 + d1 * 10 + d2",
+              "print(res)"
+            ],
+            fields: [
+              { label: "d1", expected: "4", isAnswer: false },
+              { label: "d2", expected: "7", isAnswer: false },
+              { label: "d3", expected: "1", isAnswer: false },
+              { label: "Ответ", expected: "147", isAnswer: true }
+            ]
+          },
+          4: {
+            title: "Задание №4:",
+            prompt: "Вычислите значения переменных по порядку и запишите ответ (два числа через пробел), если ввести <strong>528</strong> и <strong>763</strong>.",
+            inputText: "Ввод: a = 528, b = 763",
+            codeLines: [
+              "a = int(input())",
+              "b = int(input())",
+              "u1 = b % 100",
+              "u2 = a // 10",
+              "v1 = b // 100",
+              "v2 = a % 10",
+              "print(v2 * 100 + u1, v1 * 10 + u2 % 10)"
+            ],
+            fields: [
+              { label: "u1", expected: "63", isAnswer: false },
+              { label: "u2", expected: "52", isAnswer: false },
+              { label: "v1", expected: "7", isAnswer: false },
+              { label: "v2", expected: "8", isAnswer: false },
+              { label: "Ответ", expected: "863 72", isAnswer: true }
+            ]
+          }
+        }
+      }
+    ];
+
+    let currentVariantIndex = 0;
+    let currentStep = -1; // -1 = экран вступления, 0..3 = задания, 4 = итоги
+    const totalTasks = 4;
+    const totalSteps = 5;
+    let taskStates = {};
+
+    function pickNextVariant() {
+      const saved = sessionStorage.getItem('python_div_mod_variant');
+      if (saved === null) {
+        currentVariantIndex = Math.floor(Math.random() * variants.length);
+      } else {
+        currentVariantIndex = (parseInt(saved, 10) + 1) % variants.length;
+      }
+      sessionStorage.setItem('python_div_mod_variant', String(currentVariantIndex));
+    }
+
+    function resetTaskStates() {
+      taskStates = {};
+      for (let i = 1; i <= totalTasks; i++) {
+        taskStates[i] = {
+          attempts: 0,
+          errors: 0,
+          completed: false,
+          skipped: false
+        };
+      }
+    }
+
+    function buildTask1() {
+      const exprItems = variants[currentVariantIndex].exprItems;
+      const grid = document.getElementById('expr-grid-1');
+      grid.innerHTML = exprItems.map((item, idx) => `
+        <div class="expr-card" id="expr-card-${idx}">
+          <span class="expr-code">${item.expr} =</span>
+          <input type="text" class="expr-input" id="expr-inp-${idx}" placeholder="?" autocomplete="off">
+        </div>
+      `).join('');
+
+      const fb = document.getElementById('fb-1');
+      fb.style.display = 'none';
+      const btn = document.getElementById('btn-check-1');
+      btn.disabled = false;
+    }
+
+    function checkTask1() {
+      const exprItems = variants[currentVariantIndex].exprItems;
+      const fb = document.getElementById('fb-1');
+      const btn = document.getElementById('btn-check-1');
+      fb.style.display = 'block';
+      taskStates[1].attempts++;
+
+      let allOk = true;
+      exprItems.forEach((item, idx) => {
+        const card = document.getElementById(`expr-card-${idx}`);
+        const inp = document.getElementById(`expr-inp-${idx}`);
+        card.classList.remove('correct-card', 'error-card');
+        inp.classList.remove('ok-input', 'err-input');
+
+        const val = inp.value.trim();
+        if (val === item.expected) {
+          card.classList.add('correct-card');
+          inp.classList.add('ok-input');
+        } else {
+          allOk = false;
+          card.classList.add('error-card');
+          inp.classList.add('err-input');
+        }
+      });
+
+      if (allOk) {
+        exprItems.forEach((_, idx) => {
+          document.getElementById(`expr-inp-${idx}`).disabled = true;
+        });
+        btn.disabled = true;
+        taskStates[1].completed = true;
+        fb.className = 'feedback-note correct';
+        fb.innerText = 'Верно';
+      } else {
+        taskStates[1].errors++;
+        fb.className = 'feedback-note wrong';
+        fb.innerText = 'Неверно';
+      }
+
+      updateScoreCounter();
+      updateNextButtonState();
+    }
+
+    function formatPythonLine(line) {
+      return line.replace(/(\b(?:int|input|print)\b)|(\/\/|%|\+|\*|=)|(\b\d+\b)/g, (match, fn, op, num) => {
+        if (fn) return `<span class="fn">${fn}</span>`;
+        if (op) return `<span class="op">${op}</span>`;
+        if (num) return `<span class="num">${num}</span>`;
+        return match;
+      });
+    }
+
+    function buildTraceTasks() {
+      const traceTasks = variants[currentVariantIndex].traceTasks;
+      const container = document.getElementById('trace-tasks-container');
+      let html = '';
+
+      for (let t = 2; t <= 4; t++) {
+        const cfg = traceTasks[t];
+        const pageIdx = t - 1;
+
+        const codeHtml = cfg.codeLines.map((line, i) => `
+          <div class="code-line">
+            <span class="line-num">${i + 1}</span>
+            <span>${formatPythonLine(line)}</span>
+          </div>
+        `).join('');
+
+        const rowsHtml = cfg.fields.map((f, i) => `
+          <div class="var-row ${f.isAnswer ? 'answer-row' : ''}" id="row-${t}-${i}">
+            <div class="var-label-group">
+              <div class="var-badge ${f.isAnswer ? 'ans-badge' : ''}">${f.label}</div>
+              ${f.isAnswer ? '' : '<span class="var-eq">=</span>'}
+            </div>
+            <input type="text" class="var-input" id="inp-${t}-${i}" placeholder="?" autocomplete="off">
+          </div>
+        `).join('');
+
+        html += `
+          <div class="page-view" id="page-${pageIdx}">
+            <div class="task-statement">
+              <strong>${cfg.title}</strong> ${cfg.prompt}
+            </div>
+
+            <div class="trace-board">
+              <div class="code-panel">
+                <div>
+                  <div class="code-panel-header">Программа Python</div>
+                  <div class="code-lines">${codeHtml}</div>
+                </div>
+                <div class="input-badge-box">
+                  <strong>${cfg.inputText}</strong>
+                </div>
+              </div>
+
+              <div class="memory-panel">
+                <div class="board-header">Решение:</div>
+                ${rowsHtml}
+              </div>
+            </div>
+
+            <div>
+              <button class="btn-nav btn-forward" id="btn-check-${t}" onclick="checkTraceTask(${t})" style="background:#2563eb; color:#ffffff;">Проверить</button>
+            </div>
+            <div class="feedback-note" id="fb-${t}"></div>
+          </div>
+        `;
+      }
+
+      container.innerHTML = html;
+    }
+
+    function checkTraceTask(taskNum) {
+      const cfg = variants[currentVariantIndex].traceTasks[taskNum];
+      const fb = document.getElementById(`fb-${taskNum}`);
+      const btn = document.getElementById(`btn-check-${taskNum}`);
+      fb.style.display = 'block';
+      taskStates[taskNum].attempts++;
+
+      let allOk = true;
+      cfg.fields.forEach((f, i) => {
+        const row = document.getElementById(`row-${taskNum}-${i}`);
+        const inp = document.getElementById(`inp-${taskNum}-${i}`);
+        row.classList.remove('ok-row', 'err-row');
+        inp.classList.remove('ok-input', 'err-input');
+
+        const userVal = inp.value.trim().replace(/\s+/g, ' ');
+        if (userVal === f.expected) {
+          row.classList.add('ok-row');
+          inp.classList.add('ok-input');
+        } else {
+          allOk = false;
+          row.classList.add('err-row');
+          inp.classList.add('err-input');
+        }
+      });
+
+      if (allOk) {
+        cfg.fields.forEach((_, i) => {
+          document.getElementById(`inp-${taskNum}-${i}`).disabled = true;
+        });
+        btn.disabled = true;
+        taskStates[taskNum].completed = true;
+        fb.className = 'feedback-note correct';
+        fb.innerText = 'Верно';
+      } else {
+        taskStates[taskNum].errors++;
+        fb.className = 'feedback-note wrong';
+        fb.innerText = 'Неверно';
+      }
+
+      updateScoreCounter();
+      updateNextButtonState();
+    }
+
+    function calculateScores() {
+      let fullScore = 0;
+      let partialCount = 0;
+
+      for (let i = 1; i <= totalTasks; i++) {
+        const st = taskStates[i];
+        if (st.completed && st.errors === 0) {
+          fullScore++;
+        } else if (st.completed && st.errors > 0) {
+          partialCount++;
+        }
+      }
+
+      const totalScore = fullScore + partialCount * 0.5;
+      return { fullScore, partialCount, totalScore };
+    }
+
+    function updateScoreCounter() {
+      const { totalScore } = calculateScores();
+      const displayScore = Number.isInteger(totalScore) ? totalScore : totalScore.toFixed(1);
+      document.getElementById('score-badge-text').innerText = `Баллы: ${displayScore} / ${totalTasks}`;
+    }
+
+    function updateNextButtonState() {
+      const nextBtn = document.getElementById('global-next');
+      if (currentStep === totalSteps - 1) {
+        nextBtn.style.display = 'none';
+        return;
+      }
+      nextBtn.style.display = 'block';
+
+      const currentTaskId = currentStep + 1;
+      const isTaskCompleted = taskStates[currentTaskId] && taskStates[currentTaskId].completed;
+
+      if (isTaskCompleted) {
+        nextBtn.className = 'btn-nav btn-next-action btn-forward';
+        nextBtn.innerHTML = (currentStep === totalSteps - 2) ? 'Завершить' : 'Вперёд &rarr;';
+      } else {
+        nextBtn.className = 'btn-nav btn-next-action btn-skip';
+        nextBtn.innerHTML = 'Пропустить &rarr;';
+      }
+    }
+
+    function handleNextOrSkip() {
+      const currentTaskId = currentStep + 1;
+      if (taskStates[currentTaskId] && !taskStates[currentTaskId].completed) {
+        taskStates[currentTaskId].skipped = true;
+      }
+      changeStep(1);
+    }
+
+    function showIntroScreen() {
+      currentStep = -1;
+      document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
+      document.getElementById('page-intro').classList.add('active');
+      document.getElementById('header-status').style.display = 'none';
+      document.getElementById('nav-footer').style.display = 'none';
+    }
+
+    function startTest() {
+      document.getElementById('header-status').style.display = 'flex';
+      document.getElementById('nav-footer').style.display = 'flex';
+      goToStep(0);
+    }
+
+    function goToStep(step) {
+      currentStep = step;
+      document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
+      const targetPage = document.getElementById(`page-${step}`);
+      if (targetPage) targetPage.classList.add('active');
+
+      document.getElementById('step-badge-text').innerText = (step === totalSteps - 1) ? 'Итоги' : `Задание ${step + 1} из ${totalTasks}`;
+      document.getElementById('global-prev').disabled = (step === 0);
+
+      updateNextButtonState();
+
+      if (step === totalSteps - 1) {
+        showResults();
+      }
+    }
+
+    function changeStep(delta) {
+      const next = currentStep + delta;
+      if (next >= 0 && next < totalSteps) {
+        goToStep(next);
+      }
+    }
+
+    function showResults() {
+      const { totalScore } = calculateScores();
+      const displayTotal = Number.isInteger(totalScore) ? totalScore : totalScore.toFixed(1);
+      document.getElementById('final-score').innerText = `${displayTotal} / ${totalTasks}`;
+
+      const badgesContainer = document.getElementById('results-badges');
+      badgesContainer.innerHTML = '';
+
+      for (let i = 1; i <= totalTasks; i++) {
+        const st = taskStates[i];
+        const badge = document.createElement('div');
+        let statusClass = 'unanswered';
+
+        if (st.completed && st.errors === 0) {
+          statusClass = 'correct';
+        } else if (st.completed && st.errors > 0) {
+          statusClass = 'partial';
+        } else if (st.attempts > 0 || st.errors > 0) {
+          statusClass = 'wrong';
+        }
+
+        badge.className = 'badge-item ' + statusClass;
+        badge.innerText = '№' + i;
+        badge.onclick = () => goToStep(i - 1);
+        badgesContainer.appendChild(badge);
+      }
+    }
+
+    function initQuiz() {
+      pickNextVariant();
+      resetTaskStates();
+      buildTask1();
+      buildTraceTasks();
+      updateScoreCounter();
+      showIntroScreen();
+    }
+
+    function restartQuiz() {
+      initQuiz();
+    }
+
+    initQuiz();
+  </script>
+</body>
+</html>
